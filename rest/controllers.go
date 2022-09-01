@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/akayna/Go-dreamBridgeCybersource/rest/authentication"
-	"github.com/akayna/Go-dreamBridgeCybersource/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/authentication"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/commons"
 )
 
 var host = "apitest.cybersource.com" // Ambiente de teste

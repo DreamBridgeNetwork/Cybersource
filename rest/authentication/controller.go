@@ -6,9 +6,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/akayna/Go-dreamBridgeCybersource/rest/commons"
-	"github.com/akayna/Go-dreamBridgeCybersource/utils"
-	"github.com/akayna/Go-dreamBridgeUtils/digest"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/utils"
+	"github.com/DreamBridgeNetwork/Go-Utils/digest"
 )
 
 // Constants

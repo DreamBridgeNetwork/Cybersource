@@ -17,11 +17,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/akayna/Go-dreamBridgeCybersource/rest/commons"
-	"github.com/akayna/Go-dreamBridgeCybersource/rest/flexAPI"
-	"github.com/akayna/Go-dreamBridgeCybersource/rest/microform"
-	"github.com/akayna/Go-dreamBridgeCybersource/rest/threeds"
-	"github.com/akayna/Go-dreamBridgeUtils/jsonfile"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/flexAPI"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/microform"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/threeds"
+	"github.com/DreamBridgeNetwork/Go-Utils/jsonfile"
 )
 
 type middleware func(http.Handler) http.Handler

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/akayna/Go-dreamBridgeCybersource/rest"
-	"github.com/akayna/Go-dreamBridgeCybersource/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/commons"
 )
 
 var generateKeyEndpoint = "/flex/v1/keys"

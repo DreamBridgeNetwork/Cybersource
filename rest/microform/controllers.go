@@ -6,9 +6,9 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/akayna/Go-dreamBridgeCybersource/rest"
-	"github.com/akayna/Go-dreamBridgeCybersource/rest/commons"
-	"github.com/akayna/Go-dreamBridgeUtils/jwtutils"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Utils/jwtutils"
 	"github.com/dgrijalva/jwt-go"
 )
 
