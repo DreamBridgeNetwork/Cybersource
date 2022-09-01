@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <script language="javascript" type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script language="javascript" type="text/javascript" src="../JavaScripts/flexAPI.js"></script>
+    <script language="javascript" type="text/javascript" src="../JavaScripts/utils.js"></script>
+
+    <link rel="stylesheet" href="completo.css">
+    <title>FlexAPI - Sample Checkout</title>
+  </head>
+  <body>
+      <div class="row">
+          <div class="col-75">
+            <div class="container">
+              <form id="cardForm">
+                <div class="row">
+                  <div class="col-50">
+                    <h3>Payment</h3>
+                    <label for="cardNumber">Credit card number</label>
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="1111222233334444" value= "4111111111111111" disabled>
+        
+                    <div class="row">
+                        <div class="col-25">
+                          <label for="type">Type</label>
+                          <select id="type" name="type" disabled>
+                              <option value="001">Visa</option>
+                              <option value="002">Master</option>
+                              <option value="003">Amex</option>
+                              <option value="004">Discover</option>
+                              <option value="054">Elo</option>
+                          </select>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-75">
+            <div class="container">
+              <form id="buttonFrom">
+        
+                <div class="row">
+                  <div class="col-50">
+                  
+                    <div id="buttonDiv">
+                      <button id="tokenizeBtn" type='button' class="btn" disabled>Tokenize Card</button>
+                    </div>
+
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    <div id="hiddenDataDiv" hidden>
+      <input type="text" id="keyID" name="keyID" >
+      <input type="text" id="cardToken" name="cardToken" >
+    </div>
+  </body>
+
+  <script>
+    window.onload = function(){
+      document.getElementById('tokenizeBtn').onclick = generateCardToken;
+      getCardTokenKey();
+    };
+  </script>
+</html>
