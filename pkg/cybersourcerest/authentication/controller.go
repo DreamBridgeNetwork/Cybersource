@@ -6,7 +6,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/commons"
 	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/utils"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/digest"
 )

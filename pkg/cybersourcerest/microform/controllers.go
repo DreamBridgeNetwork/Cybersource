@@ -6,8 +6,8 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/commons"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/jwtutils"
 	"github.com/dgrijalva/jwt-go"
 )
@@ -31,7 +31,7 @@ func GenerateMicroformContext(credentials *commons.CyberSourceCredential, target
 	}
 
 	// Make the POST to generate the Microform Context
-	generateContextResp, err := rest.RestFullPOST(credentials, generateMicroformContext, string(payload))
+	generateContextResp, err := cybersourcerest.RestFullPOST(credentials, generateMicroformContext, string(payload))
 
 	if err != nil {
 		log.Println("microform - GenerateMicroformContext - Error executing POST request.")
@@ -83,7 +83,7 @@ func getPublicKey(token *jwt.Token) (interface{}, error) {
 	}
 
 	// Get the public key for validation
-	getJWTPublicKeyResp, err := rest.RestFullGETNoCerdentials(getJWTPublicKey + "/" + kid.(string))
+	getJWTPublicKeyResp, err := cybersourcerest.RestFullGETNoCerdentials(getJWTPublicKey + "/" + kid.(string))
 
 	if err != nil {
 		log.Println("microform - getPublicKey - Error executing GET request to get the JWT public key.")

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/commons"
 )
 
 var generateKeyEndpoint = "/flex/v1/keys"
@@ -25,7 +25,7 @@ func GenerateCardTokenFrontend(keyID string, cardInfo *CardInfo) (*GenerateCardT
 		return nil, "Error converting struct to json string.", err
 	}
 
-	generateCardTokenResp, err := rest.RestFullSimplePOST(generateCardTokenEndpoint, string(payload))
+	generateCardTokenResp, err := cybersourcerest.RestFullSimplePOST(generateCardTokenEndpoint, string(payload))
 
 	if err != nil {
 		log.Println("cybersourceflex - GenerateCardTokenFrontend - Error executing POST request.")
@@ -38,7 +38,7 @@ func GenerateCardTokenFrontend(keyID string, cardInfo *CardInfo) (*GenerateCardT
 }
 
 // treateGenerateCardTokenResponse - Treate the response to the Generate card token POST request
-func treateGenerateCardTokenResponse(response *rest.RequestResponse) (*GenerateCardTokenResponse, string, error) {
+func treateGenerateCardTokenResponse(response *cybersourcerest.RequestResponse) (*GenerateCardTokenResponse, string, error) {
 	if response.StatusCode > 299 || response.StatusCode < 200 {
 
 		return nil, response.Body, nil
@@ -99,7 +99,7 @@ func generateKeyJWT(credentials *commons.CyberSourceCredential, generateKeyData 
 		return nil, "Error converting struct generateKeyData to json.", err
 	}
 
-	generateKeyResp, err := rest.RestFullPOST(credentials, generateKeyEndpoint+"?format=JWT", string(payload))
+	generateKeyResp, err := cybersourcerest.RestFullPOST(credentials, generateKeyEndpoint+"?format=JWT", string(payload))
 
 	if err != nil {
 		log.Println("cybersourceflex - generateKeyJWT - Error executing POST request.")
@@ -117,7 +117,7 @@ func generateKey(credentials *commons.CyberSourceCredential, generateKeyData *Ge
 		return nil, "Error converting struct generateKeyData to json.", err
 	}
 
-	generateKeyResp, err := rest.RestFullPOST(credentials, generateKeyEndpoint, string(payload))
+	generateKeyResp, err := cybersourcerest.RestFullPOST(credentials, generateKeyEndpoint, string(payload))
 
 	if err != nil {
 		log.Println("cybersourceflex - GenerateKey - Error executing POST request.")
@@ -128,7 +128,7 @@ func generateKey(credentials *commons.CyberSourceCredential, generateKeyData *Ge
 }
 
 // treateGenerateKeyResponse - Treate the response to the Generate Key POST request
-func treateGenerateKeyResponse(response *rest.RequestResponse) (*GenerateKeyResponse, string, error) {
+func treateGenerateKeyResponse(response *cybersourcerest.RequestResponse) (*GenerateKeyResponse, string, error) {
 	if response.StatusCode > 299 || response.StatusCode < 200 {
 
 		return nil, response.Body, nil

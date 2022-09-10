@@ -1,4 +1,4 @@
-package rest
+package cybersourcerest
 
 // RestfullHeader - Struct conteining all the data necessary to the post or put header
 type RestfullHeader struct {

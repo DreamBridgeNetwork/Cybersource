@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -16,10 +19,17 @@ import (
 
 	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
 	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/flexapi"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/microform"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/threeds"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/jsonfile"
 )
 
-var cyberCredentialsFolder = "../../config/Cybersource/credentials/"
+// HttpServerConfig - Data for HTTP server configuration
+type HttpServerConfig struct {
+	CyberCredentialsFolder *string `json:"cyberCredentialsFolder,omitempty"`
+	WebServerFolder        *string `json:"webServerFolder,omitempty"`
+	HttpServerPort         *string `json:"httpServerPort,omitempty"`
+}
 
 type middleware func(http.Handler) http.Handler
 type middlewares []middleware
@@ -67,12 +77,39 @@ type controller struct {
 var credentials commons.Credentials
 
 func main() {
-
 	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
-	logger.Printf("Loading credentials...")
+
+	logger.Printf("Loading server configuration...")
+	configuration, err := loadServerConfig()
+
+	if err != nil {
+		log.Println("main - Error reading configuration file.")
+		log.Println("main - Error: ", err)
+
+		return
+	}
+
+	logger.Printf("Loading Cybersource configuration...")
+
+	/*err = rest.LoadCybersourceConfiguration()
+	if err != nil {
+		log.Println("main - Error reading Cybersource configuration file.")
+		log.Println("main - Error: ", err)
+
+		return
+	}*/
+
+	if err != nil {
+		log.Println("main - Error reading configuration file.")
+		log.Println("main - Error: ", err)
+
+		return
+	}
+
+	logger.Printf("Loading Cybersource credentials...")
 
 	// Credenciais teste
-	err := jsonfile.ReadJSONFile2(cyberCredentialsFolder, "rafaelcunha.json", &credentials)
+	err = jsonfile.ReadJSONFile2(*configuration.CyberCredentialsFolder, "rafaelcunha.json", &credentials)
 
 	// Credenciais live
 	//err := jsonfile.ReadJSONFile2(cyberCredentialsFolder, "cybsbrdemo.json", &credentials)
@@ -88,7 +125,7 @@ func main() {
 
 	logger.Printf("Server is starting...")
 
-	listenAddr := ":5000"
+	listenAddr := *configuration.HttpServerPort
 	if len(os.Args) == 2 {
 		listenAddr = os.Args[1]
 	}
@@ -101,18 +138,18 @@ func main() {
 
 	// FlexAPI services
 	router.HandleFunc("/getFlexAPIKey", getFlexAPIKey)
-	//router.HandleFunc("/getFlexAPIKeyCrypto", getFlexAPIKeyCrypto)
+	router.HandleFunc("/getFlexAPIKeyCrypto", getFlexAPIKeyCrypto)
 
 	// Microform services
-	//router.HandleFunc("/getMicroformContext", getMicroformContext)
-	//router.HandleFunc("/validateMicroformToken", validateMicroformToken)
+	router.HandleFunc("/getMicroformContext", getMicroformContext)
+	router.HandleFunc("/validateMicroformToken", validateMicroformToken)
 
 	// 3DS
-	//router.HandleFunc("/setupPayerAuth", setupPayerAuth)
-	//router.HandleFunc("/doEnrollment", doEnrollment)
-	//router.HandleFunc("/validate", validate)
+	router.HandleFunc("/setupPayerAuth", setupPayerAuth)
+	router.HandleFunc("/doEnrollment", doEnrollment)
+	router.HandleFunc("/validate", validate)
 
-	directory := flag.String("d", "./", "the directory of static file to host")
+	directory := flag.String("d", *configuration.WebServerFolder, "the directory of static file to host")
 	router.Handle("/", http.StripPrefix(strings.TrimRight("/", "/"), http.FileServer(http.Dir(*directory))))
 
 	flag.Parse()
@@ -135,6 +172,30 @@ func main() {
 	}
 	<-ctx.Done()
 	logger.Printf("Server stopped\n")
+}
+
+func loadServerConfig() (*HttpServerConfig, error) {
+	log.Println("main.loadServerConfig")
+
+	var configuration HttpServerConfig
+
+	err := jsonfile.ReadJSONFile2("../../config/", "httpserverconf.json", &configuration)
+
+	if err != nil {
+		log.Println("main.loadServerConfig - Error reading configuration file.")
+		return nil, err
+	}
+
+	confJson, err := json.MarshalIndent(configuration, "", "    ")
+
+	if err != nil {
+		log.Println("main.loadServerConfig - Error prointing Json.")
+		return nil, err
+	}
+
+	log.Println("Server configuration loaded:\n", string(confJson))
+
+	return &configuration, nil
 }
 
 func (c *controller) index(w http.ResponseWriter, req *http.Request) {
@@ -196,11 +257,10 @@ func getFlexAPIKey(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte(*generatedKey.KeyID))
 }
 
-/*
 // getFlexAPIKey - Generate ont key for the FlexAPI and send it to the browser
 func getFlexAPIKeyCrypto(w http.ResponseWriter, req *http.Request) {
 	var origin = "https://www.teste.com"
-	generatedKey, msg, err := flexAPI.GenerateRsaOaep256Key(&credentials.CyberSourceCredential, &origin)
+	generatedKey, msg, err := flexapi.GenerateRsaOaep256Key(&credentials.CyberSourceCredential, &origin)
 
 	if err != nil {
 		log.Println("main - Error generating key.")
@@ -226,8 +286,7 @@ func getFlexAPIKeyCrypto(w http.ResponseWriter, req *http.Request) {
 
 	w.Write([]byte(responseJSON))
 }
-*/
-/*
+
 // getMicroformKey - Generate one microfom key and send back to the frontend
 func getMicroformContext(w http.ResponseWriter, req *http.Request) {
 	log.Println("getMicroformContext")
@@ -248,8 +307,7 @@ func getMicroformContext(w http.ResponseWriter, req *http.Request) {
 
 	w.Write([]byte(context))
 }
-*/
-/*
+
 func validateMicroformToken(w http.ResponseWriter, req *http.Request) {
 	log.Println("validateMicroformToken")
 	defer req.Body.Close()
@@ -277,8 +335,7 @@ func validateMicroformToken(w http.ResponseWriter, req *http.Request) {
 		w.Write([]byte("Token not validated."))
 	}
 }
-*/
-/*
+
 // setupPayerAuth - Execute the setup payer auth call to Cubersource API
 func setupPayerAuth(w http.ResponseWriter, req *http.Request) {
 	log.Println("setupPayerAuth")
@@ -322,8 +379,7 @@ func setupPayerAuth(w http.ResponseWriter, req *http.Request) {
 
 	w.Write(setupPayerAuthResponseJSON)
 }
-*/
-/*
+
 // doEnrollment - Initiate enrollment process
 func doEnrollment(w http.ResponseWriter, req *http.Request) {
 	log.Println("doEnrollment")
@@ -354,7 +410,7 @@ func doEnrollment(w http.ResponseWriter, req *http.Request) {
 	var returnUrl = "https://webhook.dreambridge.net/webhook"
 
 	//var ipAddress = req.RemoteAddr
-	//var httpAcceptBrowserValueStr = "*/ /**"
+	//var httpAcceptBrowserValueStr = "*/*"
 
 	enrollmentData.ConsumerAuthenticationInformation.MCC = &mcc
 	enrollmentData.ConsumerAuthenticationInformation.RequestorID = &requestorID
@@ -401,8 +457,7 @@ func doEnrollment(w http.ResponseWriter, req *http.Request) {
 
 	w.Write(enrollmentResponseJSON)
 }
-*/
-/*
+
 func validate(w http.ResponseWriter, req *http.Request) {
 	log.Println("validate")
 
@@ -456,7 +511,7 @@ func validate(w http.ResponseWriter, req *http.Request) {
 
 	w.Write(validationResponseJSON)
 }
-*/
+
 // main_test.go
 var (
 	_ http.Handler = http.HandlerFunc((&controller{}).index)

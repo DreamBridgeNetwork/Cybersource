@@ -1,4 +1,4 @@
-package rest
+package cybersourcerest
 
 import (
 	"encoding/json"
@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/authentication"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/authentication"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/commons"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/jsonfile"
 )
 

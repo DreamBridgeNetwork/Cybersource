@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/commons"
 )
 
 var setupPayerAuthEndpoint = "/risk/v1/authentication-setups"
@@ -25,7 +25,7 @@ func SetupPayerAuthRequest(credentials *commons.CyberSourceCredential, data *Set
 	fmt.Println("Json Request: ")
 	fmt.Println(string(jsonData))
 
-	setupRawResp, err := rest.RestFullPOST(credentials, setupPayerAuthEndpoint, string(jsonData))
+	setupRawResp, err := cybersourcerest.RestFullPOST(credentials, setupPayerAuthEndpoint, string(jsonData))
 
 	if err != nil {
 		log.Println("cybersource3ds - SetupPayerAuthRequest - Error executing POST request.")
@@ -36,7 +36,7 @@ func SetupPayerAuthRequest(credentials *commons.CyberSourceCredential, data *Set
 }
 
 // treatSetupPayerAuthResponse - Verify and treat the HTTP Post Response to a Setup Request
-func treatSetupPayerAuthResponse(response *rest.RequestResponse) (*SetupPayerAuthResponseData, string, error) {
+func treatSetupPayerAuthResponse(response *cybersourcerest.RequestResponse) (*SetupPayerAuthResponseData, string, error) {
 	if response.StatusCode > 299 || response.StatusCode < 200 {
 
 		return nil, response.Body, nil
@@ -65,7 +65,7 @@ func EnrollmentRequest(credentials *commons.CyberSourceCredential, data *Enrollm
 	fmt.Println("Json Request: ")
 	fmt.Println(string(jsonData))
 
-	enrollmentRawResp, err := rest.RestFullPOST(credentials, enrollmentEndpoint, string(jsonData))
+	enrollmentRawResp, err := cybersourcerest.RestFullPOST(credentials, enrollmentEndpoint, string(jsonData))
 
 	if err != nil {
 		log.Println("cybersource3ds - EnrollmentRequest - Error executing POST request.")
@@ -76,7 +76,7 @@ func EnrollmentRequest(credentials *commons.CyberSourceCredential, data *Enrollm
 }
 
 // treatEnrollmentRequestResponse - Verify and treat the HTTP Post Response to a Enrollment Request
-func treatEnrollmentRequestResponse(response *rest.RequestResponse) (*EnrollmentResponse, string, error) {
+func treatEnrollmentRequestResponse(response *cybersourcerest.RequestResponse) (*EnrollmentResponse, string, error) {
 	if response.StatusCode > 299 || response.StatusCode < 200 {
 
 		return nil, response.Body, nil
@@ -105,7 +105,7 @@ func ValidationtRequest(credentials *commons.CyberSourceCredential, data *Valida
 	log.Println("Json Request: ")
 	log.Println(string(jsonData))
 
-	validationRawResp, err := rest.RestFullPOST(credentials, validationEndpoint, string(jsonData))
+	validationRawResp, err := cybersourcerest.RestFullPOST(credentials, validationEndpoint, string(jsonData))
 
 	if err != nil {
 		log.Println("cybersource3ds - ValidationtRequest - Error executing POST request.")
@@ -116,7 +116,7 @@ func ValidationtRequest(credentials *commons.CyberSourceCredential, data *Valida
 }
 
 // treatValidationRequestResponse - Verify and treat the HTTP Post Response to a Validation Request
-func treatValidationRequestResponse(response *rest.RequestResponse) (*ValidationResponse, string, error) {
+func treatValidationRequestResponse(response *cybersourcerest.RequestResponse) (*ValidationResponse, string, error) {
 	log.Println("Validation Response:")
 	log.Printf("%+v\n", response)
 
