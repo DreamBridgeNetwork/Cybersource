@@ -14,7 +14,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersource/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/jsonfile"
 )
 
