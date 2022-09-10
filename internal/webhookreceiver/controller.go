@@ -5,10 +5,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/DreamBridgeNetwork/Go-Cybersource/internal/notifications"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/emailutils"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/httputils"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/stringutils"
-	"github.com/akayna/Go-dreamBridgeRESTAPI/notifications"
 )
 
 func LoadWebhookReceiverConfig() error {
