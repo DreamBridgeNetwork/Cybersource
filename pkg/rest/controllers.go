@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -9,16 +10,52 @@ import (
 
 	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/authentication"
 	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Utils/pkg/jsonfile"
 )
-
-var host = "apitest.cybersource.com" // Ambiente de teste
-//var host = "api.cybersource.com" // Ambiente produtivo
 
 // Functions
 
+// getHost - Return the production or test url
+func (*CybersourceConfig) getHost() string {
+	if *cybersourceConfiguration.Environment == "PRODUCTION" {
+		return *cybersourceConfiguration.ProductionURL
+	}
+
+	if *cybersourceConfiguration.Environment == "TEST" {
+		return *cybersourceConfiguration.TesteURL
+	}
+
+	return ""
+}
+
+// LoadCybersourceConfiguration - Load Cybersource configurations
+func LoadCybersourceConfiguration() error {
+	log.Println("rest.LoadCybersourceConfiguration")
+
+	log.Println("Loading Cybersource configuration.")
+
+	err := jsonfile.ReadJSONFile2("../../config/Cybersource/", "cybersourceconfig.json", &cybersourceConfiguration)
+
+	if err != nil {
+		log.Println("rest.LoadCybersourceConfiguration - Error reading Cybersource configuration file.")
+		return err
+	}
+
+	confJson, err := json.MarshalIndent(cybersourceConfiguration, "", "    ")
+
+	if err != nil {
+		log.Println("rest.LoadCybersourceConfiguration - Error prointing Json.")
+		return err
+	}
+
+	log.Println("Cybersource configuration loaded:\n", string(confJson))
+
+	return nil
+}
+
 // RestFullSimplePOST - Execute a simple Post call to an endpoint
 func RestFullSimplePOST(endpoint, payload string) (*RequestResponse, error) {
-	url := "https://" + host + endpoint
+	url := "https://" + cybersourceConfiguration.getHost() + endpoint
 
 	req, _ := http.NewRequest("POST", url, strings.NewReader(payload))
 
@@ -44,11 +81,11 @@ func RestFullSimplePOST(endpoint, payload string) (*RequestResponse, error) {
 
 // RestFullPOST - Execute a Post call to an endpoint
 func RestFullPOST(credentials *commons.CyberSourceCredential, endpoint, payload string) (*RequestResponse, error) {
-	url := "https://" + host + endpoint
+	url := "https://" + cybersourceConfiguration.getHost() + endpoint
 
 	req, _ := http.NewRequest("POST", url, strings.NewReader(payload))
 
-	header, err := authentication.GetHeader(credentials, host, payload, "POST", endpoint)
+	header, err := authentication.GetHeader(credentials, cybersourceConfiguration.getHost(), payload, "POST", endpoint)
 	if err != nil {
 		log.Println("cybersourcerest - RestFullGET - Error generating Get headers.")
 		return nil, err
@@ -90,11 +127,11 @@ func RestFullPOST(credentials *commons.CyberSourceCredential, endpoint, payload 
 
 // RestFullDELETE - Execute a Delete call to an endpoint
 func RestFullDELETE(credentials *commons.CyberSourceCredential, endpoint string) (*RequestResponse, error) {
-	url := "https://" + host + endpoint
+	url := "https://" + cybersourceConfiguration.getHost() + endpoint
 
 	req, _ := http.NewRequest("DELETE", url, nil)
 
-	header, err := authentication.GetHeader(credentials, host, "", "DELETE", endpoint)
+	header, err := authentication.GetHeader(credentials, cybersourceConfiguration.getHost(), "", "DELETE", endpoint)
 	if err != nil {
 		log.Println("cybersourcerest - RestFullDELETE - Error generating headers.")
 		return nil, err
@@ -129,13 +166,13 @@ func RestFullDELETE(credentials *commons.CyberSourceCredential, endpoint string)
 
 // RestFullGET - Execute a Get call to an endpoint
 func RestFullGET(credentials *commons.CyberSourceCredential, endpoint string) (*RequestResponse, error) {
-	url := "https://" + host + endpoint
+	url := "https://" + cybersourceConfiguration.getHost() + endpoint
 
 	log.Println("Get URL: " + url)
 
 	req, _ := http.NewRequest("GET", url, nil)
 
-	header, err := authentication.GetHeader(credentials, host, "", "GET", endpoint)
+	header, err := authentication.GetHeader(credentials, cybersourceConfiguration.getHost(), "", "GET", endpoint)
 	if err != nil {
 		log.Println("cybersourcerest - RestFullGET - Error generating Get headers.")
 		return nil, err
@@ -171,7 +208,7 @@ func RestFullGET(credentials *commons.CyberSourceCredential, endpoint string) (*
 
 // RestFullGETNoCerdentials - Execute a Get call to an endpoint without the credentials
 func RestFullGETNoCerdentials(endpoint string) (*RequestResponse, error) {
-	url := "https://" + host + endpoint
+	url := "https://" + cybersourceConfiguration.getHost() + endpoint
 
 	log.Println("Get URL: " + url)
 

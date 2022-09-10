@@ -1,0 +1,5 @@
+{
+    "environment": "TEST",
+    "testeURL": "apitest.cybersource.com",
+    "productionURL": "api.cybersource.com"
+}

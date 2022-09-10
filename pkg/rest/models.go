@@ -24,3 +24,12 @@ type RequestResponse struct {
 	StatusCode int
 	Body       string
 }
+
+// CybersourceConfig - Data for Cybersource anvironment configuration.
+type CybersourceConfig struct {
+	Environment   *string `json:"environment,omitempty"`
+	TesteURL      *string `json:"testeURL,omitempty"`
+	ProductionURL *string `json:"productionURL,omitempty"`
+}
+
+var cybersourceConfiguration CybersourceConfig
