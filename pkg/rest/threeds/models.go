@@ -3,7 +3,7 @@ package threeds
 import (
 	"time"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
 )
 
 // TransactionModeMOTO - Mail Order Telephone Order

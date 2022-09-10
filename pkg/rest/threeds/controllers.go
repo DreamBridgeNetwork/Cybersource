@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/rest"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
 )
 
 var setupPayerAuthEndpoint = "/risk/v1/authentication-setups"
