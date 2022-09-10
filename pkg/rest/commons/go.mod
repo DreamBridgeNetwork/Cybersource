@@ -1,3 +1,3 @@
-module github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersource/rest/commons
+module github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons
 
 go 1.18
