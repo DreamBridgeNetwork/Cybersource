@@ -17,10 +17,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/flexapi"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/microform"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/threeds"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/internal/notifications"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/internal/webhookreceiver"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/flexapi"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/microform"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/threeds"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/jsonfile"
 )
 
@@ -91,16 +94,9 @@ func main() {
 
 	logger.Printf("Loading Cybersource configuration...")
 
-	/*err = rest.LoadCybersourceConfiguration()
+	err = cybersourcerest.LoadCybersourceConfiguration()
 	if err != nil {
 		log.Println("main - Error reading Cybersource configuration file.")
-		log.Println("main - Error: ", err)
-
-		return
-	}*/
-
-	if err != nil {
-		log.Println("main - Error reading configuration file.")
 		log.Println("main - Error: ", err)
 
 		return
@@ -115,13 +111,34 @@ func main() {
 	//err := jsonfile.ReadJSONFile2(cyberCredentialsFolder, "cybsbrdemo.json", &credentials)
 
 	if err != nil {
-		log.Println("Erro ao ler credenciais.")
-		log.Println("Erro: ", err)
+		log.Println("main - Erro reading Cyberspource credentials.")
+		log.Println("main - Error: ", err)
 
 		return
 	}
 
 	logger.Println("Credentials loaded: " + credentials.CyberSourceCredential.MID)
+
+	logger.Printf("Loading Webhookreceiver configuration...")
+
+	err = webhookreceiver.LoadWebhookReceiverConfig()
+
+	if err != nil {
+		log.Println("main - Erro reading WebhookReceiver configuration.")
+		log.Println("main - Error: ", err)
+
+		return
+	}
+
+	logger.Printf("Initializing notifications...")
+	err = notifications.InitiNotifications()
+
+	if err != nil {
+		log.Println("main - Erro loading Notifications configuration.")
+		log.Println("main - Error: ", err)
+
+		return
+	}
 
 	logger.Printf("Server is starting...")
 
@@ -148,6 +165,9 @@ func main() {
 	router.HandleFunc("/setupPayerAuth", setupPayerAuth)
 	router.HandleFunc("/doEnrollment", doEnrollment)
 	router.HandleFunc("/validate", validate)
+
+	// WebhookReceiver
+	router.HandleFunc("/webhookreceiver", webhookreceiver.Webhoook)
 
 	directory := flag.String("d", *configuration.WebServerFolder, "the directory of static file to host")
 	router.Handle("/", http.StripPrefix(strings.TrimRight("/", "/"), http.FileServer(http.Dir(*directory))))

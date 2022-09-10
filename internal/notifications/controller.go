@@ -1,24 +1,62 @@
 package notifications
 
 import (
+	"encoding/json"
 	"errors"
 	"log"
 	"time"
 
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/emailutils"
+	"github.com/DreamBridgeNetwork/Go-Utils/pkg/jsonfile"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/queueutils/blockbucket"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/queueutils/fifoqueue"
 )
 
+func loadConfiguration() error {
+	log.Println("notifications.loadConfiguration")
+
+	log.Println("Loading Notifications configuration.")
+
+	err := jsonfile.ReadJSONFile2("../../config/", "notificationsconfig.json", &config)
+
+	if err != nil {
+		log.Println("notifications.loadConfiguration - Error reading Notifications configuration file.")
+		return err
+	}
+
+	confJson, err := json.MarshalIndent(config, "", "    ")
+
+	if err != nil {
+		log.Println("notifications.loadConfiguration - Error prointing Json.")
+		return err
+	}
+
+	log.Println("Notifications configuration loaded:\n", string(confJson))
+
+	return nil
+}
+
 // InitiNotifications - Initialize the notifications routine
-func InitiNotifications() {
-	notificationsFifo = fifoqueue.NewFifo(FifoSize)
+func InitiNotifications() error {
+	log.Println("notifications.InitiNotifications")
+
+	err := loadConfiguration()
+	if err != nil {
+		log.Println("notifications.InitiNotifications - Error loading configuration.")
+		return err
+	}
+
+	notificationsFifo = fifoqueue.NewFifo(*config.FifoSize)
 	numJobsRunning = 0
 	setMainJobRunning(false)
+
+	return nil
 }
 
 // AddNewNotification - Add a new notification do be done. May return some errors.
 func AddNewNotification(channel notificationChannel, data interface{}) error {
+	log.Println("notifications.AddNewNotification")
+
 	if notificationsFifo.IsFull() {
 		return errors.New("notifications.AddNewNotification - Can´t add new notitication. Fifo is full")
 	}
@@ -46,7 +84,7 @@ func sendNotificationsJob() {
 	defer setMainJobRunning(false)
 
 	for !notificationsFifo.IsEmpty() {
-		if numJobsRunning < numMaxJobs {
+		if numJobsRunning < *config.NumMaxJobs {
 			addNumJobsRunning()
 
 			log.Println("notifications.sendNotificationsJob - Number of notifications to send: ", notificationsFifo.Size())

@@ -1,6 +1,7 @@
 package webhookreceiver
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,29 +9,35 @@ import (
 	"github.com/DreamBridgeNetwork/Go-Cybersource/internal/notifications"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/emailutils"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/httputils"
+	"github.com/DreamBridgeNetwork/Go-Utils/pkg/jsonfile"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/stringutils"
 )
 
+// LoadWebhookReceiverConfig - Load the configurations for the WebhhokReceiver
 func LoadWebhookReceiverConfig() error {
-	/*log.Println("webhook.LoadConfig - Loading configuration file", configFileName)
+	log.Println("webhookreceiver.LoadWebhookReceiverConfig")
 
-	err := jsonfile.ReadJSONFile2("./configurations/", configFileName, &webhookConfig)
+	err := jsonfile.ReadJSONFile2("../../config/", "webhookreceiverconfig.json", &webhookConfig)
 
 	if err != nil {
-		log.Println("webhook.LoadConfig -Error loading configuration file: ", configFileName)
+		log.Println("webhookreceiver.LoadWebhookReceiverConfig - Error reading configuration file.")
 		return err
 	}
 
-	log.Println("webhook.LoadConfig - Configuration file loaded.")
-	log.Printf("\n%+v", webhookConfig)*/
-	webhookConfig.EmailConfig.From = "system@dreambridge.net"
-	webhookConfig.EmailConfig.Password = "ekveskkmbuheptzy"
-	webhookConfig.EmailConfig.To = append(webhookConfig.EmailConfig.To, "rafael.cunha@visa.com")
-	webhookConfig.EmailConfig.To = append(webhookConfig.EmailConfig.To, "aquinocunha@gmail.com")
+	confJson, err := json.MarshalIndent(webhookConfig, "", "    ")
+
+	if err != nil {
+		log.Println("webhookreceiver.LoadWebhookReceiverConfig - Error printing Json.")
+		return err
+	}
+
+	log.Println("WebhookReceiver configuration loaded:\n", string(confJson))
+
 	return nil
 }
 
 func Webhoook(w http.ResponseWriter, req *http.Request) {
+	log.Println("webhookreceiver.Webhoook")
 
 	body, err := httputils.RequestBodyToString(req)
 
@@ -74,11 +81,11 @@ func adjustRecipients(email *emailutils.TextEmail, headerMerchantID string) {
 	email.Cco = append(email.Cco, webhookConfig.EmailConfig.Cco...)
 
 	if headerMerchantID != "" {
-		for _, merchantID := range webhookConfig.MerchantID {
-			if merchantID.MerchantID == headerMerchantID {
-				email.To = append(email.To, merchantID.To...)
-				email.Co = append(email.Co, merchantID.Co...)
-				email.Cco = append(email.Cco, merchantID.Cco...)
+		for _, merchant := range webhookConfig.Merchant {
+			if merchant.MerchantID == headerMerchantID {
+				email.To = append(email.To, merchant.To...)
+				email.Co = append(email.Co, merchant.Co...)
+				email.Cco = append(email.Cco, merchant.Cco...)
 			}
 		}
 	}

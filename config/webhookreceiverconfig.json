@@ -1,0 +1,31 @@
+{
+    "emailConfig": {
+        "from": "rafaelcunha@dreamcloud.network",
+        "password": "Sonh@dor19",
+        "to": [
+            "rafael.cunha@visa.com",
+            "aquinocunha@gmail.com"
+        ],
+        "co": [
+            "aquinocunha@gmail.com"
+        ],
+        "cco": [
+            ""
+        ],
+        "subject": "New webhook received"
+    },
+    "merchant": [
+        {
+            "merchantID": "rafaelcunha",
+		    "to": [
+                "aquinocunha@gmail.com"
+            ],
+		    "co": [
+                "rafael.cunha@visa.com"
+            ],
+		    "cco": [
+                ""
+            ]
+        }
+    ]
+}

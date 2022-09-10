@@ -7,10 +7,10 @@ var webhookConfig WebhookConfigurations
 
 type WebhookConfigurations struct {
 	EmailConfig emailutils.TextEmail `json:"emailConfig,omitempty"`
-	MerchantID  []struct {
+	Merchant    []struct {
 		MerchantID string   `json:"merchantID,omitempty"`
 		To         []string `json:"to,omitempty"`
 		Co         []string `json:"co,omitempty"`
 		Cco        []string `json:"cco,omitempty"`
-	} `json:"merchantID"`
+	} `json:"merchant,omitempty"`
 }

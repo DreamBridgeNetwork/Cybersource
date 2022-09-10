@@ -1,0 +1,4 @@
+{
+    "fifoSize": 100,
+    "numMaxJobs": 10
+}

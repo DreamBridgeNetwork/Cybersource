@@ -6,11 +6,15 @@ import (
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/queueutils/fifoqueue"
 )
 
-const FifoSize = 100
+// notificationsConfig - Struct with all notifications configuration
+type notificationsConfig struct {
+	FifoSize   *uint `json:"fifoSize,omitempty"`
+	NumMaxJobs *int  `json:"numMaxJobs,omitempty"`
+}
+
+var config notificationsConfig
 
 var notificationsFifo *fifoqueue.FifoQueue
-
-const numMaxJobs = 10
 
 var numJobsRunning int
 var numJobsRunningMu sync.Mutex
