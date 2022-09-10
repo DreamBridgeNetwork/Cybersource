@@ -2,11 +2,8 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -17,11 +14,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/commons"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/flexAPI"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/microform"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/threeds"
-	"github.com/DreamBridgeNetwork/Go-Utils/jsonfile"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersource/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Utils/pkg/jsonfile"
 )
 
 type middleware func(http.Handler) http.Handler
@@ -103,17 +97,17 @@ func main() {
 	router.HandleFunc("/healthz", c.healthz)
 
 	// FlexAPI services
-	router.HandleFunc("/getFlexAPIKey", getFlexAPIKey)
-	router.HandleFunc("/getFlexAPIKeyCrypto", getFlexAPIKeyCrypto)
+	//router.HandleFunc("/getFlexAPIKey", getFlexAPIKey)
+	//router.HandleFunc("/getFlexAPIKeyCrypto", getFlexAPIKeyCrypto)
 
 	// Microform services
-	router.HandleFunc("/getMicroformContext", getMicroformContext)
-	router.HandleFunc("/validateMicroformToken", validateMicroformToken)
+	//router.HandleFunc("/getMicroformContext", getMicroformContext)
+	//router.HandleFunc("/validateMicroformToken", validateMicroformToken)
 
 	// 3DS
-	router.HandleFunc("/setupPayerAuth", setupPayerAuth)
-	router.HandleFunc("/doEnrollment", doEnrollment)
-	router.HandleFunc("/validate", validate)
+	//router.HandleFunc("/setupPayerAuth", setupPayerAuth)
+	//router.HandleFunc("/doEnrollment", doEnrollment)
+	//router.HandleFunc("/validate", validate)
 
 	directory := flag.String("d", "./", "the directory of static file to host")
 	router.Handle("/", http.StripPrefix(strings.TrimRight("/", "/"), http.FileServer(http.Dir(*directory))))
@@ -180,6 +174,7 @@ func (c *controller) tracing(hdlr http.Handler) http.Handler {
 	})
 }
 
+/*
 // getFlexAPIKey - Generate ont key for the FlexAPI and send it to the browser
 func getFlexAPIKey(w http.ResponseWriter, req *http.Request) {
 	log.Println("getFlexAPIKey")
@@ -198,7 +193,8 @@ func getFlexAPIKey(w http.ResponseWriter, req *http.Request) {
 
 	w.Write([]byte(*generatedKey.KeyID))
 }
-
+*/
+/*
 // getFlexAPIKey - Generate ont key for the FlexAPI and send it to the browser
 func getFlexAPIKeyCrypto(w http.ResponseWriter, req *http.Request) {
 	var origin = "https://www.teste.com"
@@ -228,7 +224,8 @@ func getFlexAPIKeyCrypto(w http.ResponseWriter, req *http.Request) {
 
 	w.Write([]byte(responseJSON))
 }
-
+*/
+/*
 // getMicroformKey - Generate one microfom key and send back to the frontend
 func getMicroformContext(w http.ResponseWriter, req *http.Request) {
 	log.Println("getMicroformContext")
@@ -249,7 +246,8 @@ func getMicroformContext(w http.ResponseWriter, req *http.Request) {
 
 	w.Write([]byte(context))
 }
-
+*/
+/*
 func validateMicroformToken(w http.ResponseWriter, req *http.Request) {
 	log.Println("validateMicroformToken")
 	defer req.Body.Close()
@@ -277,7 +275,8 @@ func validateMicroformToken(w http.ResponseWriter, req *http.Request) {
 		w.Write([]byte("Token not validated."))
 	}
 }
-
+*/
+/*
 // setupPayerAuth - Execute the setup payer auth call to Cubersource API
 func setupPayerAuth(w http.ResponseWriter, req *http.Request) {
 	log.Println("setupPayerAuth")
@@ -321,7 +320,8 @@ func setupPayerAuth(w http.ResponseWriter, req *http.Request) {
 
 	w.Write(setupPayerAuthResponseJSON)
 }
-
+*/
+/*
 // doEnrollment - Initiate enrollment process
 func doEnrollment(w http.ResponseWriter, req *http.Request) {
 	log.Println("doEnrollment")
@@ -351,8 +351,8 @@ func doEnrollment(w http.ResponseWriter, req *http.Request) {
 
 	var returnUrl = "https://webhook.dreambridge.net/webhook"
 
-	var ipAddress = req.RemoteAddr
-	var httpAcceptBrowserValueStr = "*/*"
+	//var ipAddress = req.RemoteAddr
+	//var httpAcceptBrowserValueStr = "*/ /**"
 
 	enrollmentData.ConsumerAuthenticationInformation.MCC = &mcc
 	enrollmentData.ConsumerAuthenticationInformation.RequestorID = &requestorID
@@ -374,8 +374,8 @@ func doEnrollment(w http.ResponseWriter, req *http.Request) {
 	MerchantInformationData.MerchantDescriptor = MerchantDescriptorData
 	enrollmentData.MerchantInformation = MerchantInformationData
 
-	enrollmentData.DeviceInformation.IPAddress = &ipAddress
-	enrollmentData.DeviceInformation.HTTPAcceptBrowserValue = &httpAcceptBrowserValueStr
+	//enrollmentData.DeviceInformation.IPAddress = &ipAddress
+	//enrollmentData.DeviceInformation.HTTPAcceptBrowserValue = &httpAcceptBrowserValueStr
 
 	enrollmentResponse, returnString, err := threeds.EnrollmentRequest(&credentials.CyberSourceCredential, &enrollmentData)
 
@@ -399,7 +399,8 @@ func doEnrollment(w http.ResponseWriter, req *http.Request) {
 
 	w.Write(enrollmentResponseJSON)
 }
-
+*/
+/*
 func validate(w http.ResponseWriter, req *http.Request) {
 	log.Println("validate")
 
@@ -453,7 +454,7 @@ func validate(w http.ResponseWriter, req *http.Request) {
 
 	w.Write(validationResponseJSON)
 }
-
+*/
 // main_test.go
 var (
 	_ http.Handler = http.HandlerFunc((&controller{}).index)

@@ -41,9 +41,9 @@ function setupPayerAuthPAN() {
     console.log("setupPayerAuthPAN");
 
     var setupPayerAuthData = {
-        clientReferenceInformation: {
+        /*clientReferenceInformation: {
             code: document.getElementById("referenceCode").value
-        },
+        },*/
         paymentInformation: {
             card: {
                 number: document.getElementById("cardNumber").value,
@@ -440,8 +440,8 @@ function getAuthenticationData() {
             overridePaymentMethod: document.getElementById("overridePaymentMethod").value,
             referenceId: document.getElementById("referenceID").value,
             deviceChannel: "Browser",
-        },
-        deviceInformation: mountDeviceFingerprint()
+        }
+        //deviceInformation: mountDeviceFingerprint()
     };
 
     return authenticationData;
