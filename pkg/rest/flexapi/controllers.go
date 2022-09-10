@@ -1,4 +1,4 @@
-package flexAPI
+package flexapi
 
 import (
 	"encoding/json"

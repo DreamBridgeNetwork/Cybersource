@@ -6,9 +6,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/rest/commons"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/utils"
-	"github.com/DreamBridgeNetwork/Go-Utils/digest"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/utils"
+	"github.com/DreamBridgeNetwork/Go-Utils/pkg/digest"
 )
 
 // Constants

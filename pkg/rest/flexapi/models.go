@@ -1,4 +1,4 @@
-package flexAPI
+package flexapi
 
 // generateCardTokenRequest - Struct with the necessary information to execute a generate card request.
 type generateCardTokenRequest struct {

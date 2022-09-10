@@ -15,8 +15,11 @@ import (
 	"time"
 
 	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/commons"
+	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/rest/flexapi"
 	"github.com/DreamBridgeNetwork/Go-Utils/pkg/jsonfile"
 )
+
+var cyberCredentialsFolder = "../../config/Cybersource/credentials/"
 
 type middleware func(http.Handler) http.Handler
 type middlewares []middleware
@@ -69,10 +72,10 @@ func main() {
 	logger.Printf("Loading credentials...")
 
 	// Credenciais teste
-	err := jsonfile.ReadJSONFile2("/home/rafaelsonhador/Documents/Credenciais Cybersource/", "rafaelcunha.json", &credentials)
+	err := jsonfile.ReadJSONFile2(cyberCredentialsFolder, "rafaelcunha.json", &credentials)
 
 	// Credenciais live
-	//err := jsonfile.ReadJSONFile2("/home/rafaelsonhador/Documents/Credenciais Cybersource/", "cybsbrdemo.json", &credentials)
+	//err := jsonfile.ReadJSONFile2(cyberCredentialsFolder, "cybsbrdemo.json", &credentials)
 
 	if err != nil {
 		log.Println("Erro ao ler credenciais.")
@@ -97,7 +100,7 @@ func main() {
 	router.HandleFunc("/healthz", c.healthz)
 
 	// FlexAPI services
-	//router.HandleFunc("/getFlexAPIKey", getFlexAPIKey)
+	router.HandleFunc("/getFlexAPIKey", getFlexAPIKey)
 	//router.HandleFunc("/getFlexAPIKeyCrypto", getFlexAPIKeyCrypto)
 
 	// Microform services
@@ -174,12 +177,11 @@ func (c *controller) tracing(hdlr http.Handler) http.Handler {
 	})
 }
 
-/*
 // getFlexAPIKey - Generate ont key for the FlexAPI and send it to the browser
 func getFlexAPIKey(w http.ResponseWriter, req *http.Request) {
 	log.Println("getFlexAPIKey")
 
-	generatedKey, msg, err := flexAPI.GenerateKey(&credentials.CyberSourceCredential, nil)
+	generatedKey, msg, err := flexapi.GenerateKey(&credentials.CyberSourceCredential, nil)
 
 	if err != nil {
 		log.Println("main - Error generating key.")
@@ -193,7 +195,7 @@ func getFlexAPIKey(w http.ResponseWriter, req *http.Request) {
 
 	w.Write([]byte(*generatedKey.KeyID))
 }
-*/
+
 /*
 // getFlexAPIKey - Generate ont key for the FlexAPI and send it to the browser
 func getFlexAPIKeyCrypto(w http.ResponseWriter, req *http.Request) {
