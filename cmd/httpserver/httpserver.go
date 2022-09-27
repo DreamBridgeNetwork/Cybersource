@@ -17,8 +17,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/DreamBridgeNetwork/Go-Cybersource/internal/notifications"
-	"github.com/DreamBridgeNetwork/Go-Cybersource/internal/webhookreceiver"
 	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest"
 	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/commons"
 	"github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest/flexapi"
@@ -30,7 +28,6 @@ import (
 // HttpServerConfig - Data for HTTP server configuration
 type HttpServerConfig struct {
 	CyberCredentialsFolder *string `json:"cyberCredentialsFolder,omitempty"`
-	WebServerFolder        *string `json:"webServerFolder,omitempty"`
 	HttpServerPort         *string `json:"httpServerPort,omitempty"`
 }
 
@@ -119,20 +116,6 @@ func main() {
 
 	logger.Println("Credentials loaded: " + credentials.CyberSourceCredential.MID)
 
-	logger.Printf("Loading Webhookreceiver configuration...")
-
-	err = webhookreceiver.LoadWebhookReceiverConfig()
-
-	if err != nil {
-		log.Println("main - Erro reading WebhookReceiver configuration.")
-		log.Println("main - Error: ", err)
-
-		return
-	}
-
-	logger.Printf("Initializing notifications...")
-	err = notifications.InitiNotifications()
-
 	if err != nil {
 		log.Println("main - Erro loading Notifications configuration.")
 		log.Println("main - Error: ", err)
@@ -165,12 +148,6 @@ func main() {
 	router.HandleFunc("/setupPayerAuth", setupPayerAuth)
 	router.HandleFunc("/doEnrollment", doEnrollment)
 	router.HandleFunc("/validate", validate)
-
-	// WebhookReceiver
-	router.HandleFunc("/webhookreceiver", webhookreceiver.Webhoook)
-
-	directory := flag.String("d", *configuration.WebServerFolder, "the directory of static file to host")
-	router.Handle("/", http.StripPrefix(strings.TrimRight("/", "/"), http.FileServer(http.Dir(*directory))))
 
 	flag.Parse()
 

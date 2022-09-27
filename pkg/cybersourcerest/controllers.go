@@ -34,7 +34,7 @@ func LoadCybersourceConfiguration() error {
 
 	log.Println("Loading Cybersource configuration.")
 
-	err := jsonfile.ReadJSONFile2("../../config/Cybersource/", "cybersourceconfig.json", &cybersourceConfiguration)
+	err := jsonfile.ReadJSONFile2("../../config/", "cybersourceconfig.json", &cybersourceConfiguration)
 
 	if err != nil {
 		log.Println("rest.LoadCybersourceConfiguration - Error reading Cybersource configuration file.")

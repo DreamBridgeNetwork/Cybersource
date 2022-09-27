@@ -1,5 +1,4 @@
 {
-    "cyberCredentialsFolder": "../../config/Cybersource/credentials/",
-    "webServerFolder": "../../web",
+    "cyberCredentialsFolder": "../../config/credentials/",
     "httpServerPort": ":5000"
 }

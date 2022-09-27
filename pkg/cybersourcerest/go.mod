@@ -1,10 +1,11 @@
-module github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest
+module github.com/Go-Cybersource/pkg/cybersourcerest
 
-go 1.18
+go 1.19
 
 require (
-	github.com/DreamBridgeNetwork/Go-Cybersource/pkg/utils v0.0.0-20220910161331-81445e38ada5
-	github.com/DreamBridgeNetwork/Go-Utils v0.0.0-20220910161946-55c15a02b5b8
+	github.com/DreamBridgeNetwork/Go-Cybersource/pkg/cybersourcerest v0.0.0-20220926123211-f0ca62a9b43e
+	github.com/DreamBridgeNetwork/Go-Cybersource/pkg/utils v0.0.0-20220926123211-f0ca62a9b43e
+	github.com/DreamBridgeNetwork/Go-Utils v0.0.0-20220917200124-80c5468fb864
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 )
 
